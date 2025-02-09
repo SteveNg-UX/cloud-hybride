@@ -1,0 +1,26 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 35" width="108" height="35">
+	<title>logo</title>
+	<defs>
+		<clipPath clipPathUnits="userSpaceOnUse" id="cp1">
+			<path d="m0 0h108v35h-108z"/>
+		</clipPath>
+	</defs>
+	<style>
+		tspan { white-space:pre } 
+		.t0 { font-size: 16px;fill: #ffffff;font-weight: 400;font-family: "ABeeZee-Regular", "ABeeZee" } 
+		.s1 { fill: #ffffff } 
+	</style>
+	<g id="Clip-Path" clip-path="url(#cp1)">
+		<g>
+			<text id="Cloud 01" style="transform: matrix(1,0,0,1,36.625,22.5)" >
+				<tspan x="0" y="0" class="t0">C</tspan><tspan  y="0" class="t0">l</tspan><tspan  y="0" class="t0">o</tspan><tspan  y="0" class="t0">u</tspan><tspan  y="0" class="t0">d</tspan><tspan  y="0" class="t0"> </tspan><tspan  y="0" class="t0">0</tspan><tspan  y="0" class="t0">1</tspan><tspan  y="0" class="t0">
+</tspan>
+			</text>
+			<g>
+				<path class="s1" d="m29.9 9.2l-14.5-8.3-14.4 8.3v16.7l4.8 2.8v-16.7l9.6-5.6 9.7 5.6v16.7l4.8-2.8z"/>
+				<path class="s1" d="m20.3 14.8l-4.9-2.8-4.8 2.8v5.5l4.8 2.8 4.9-2.8z"/>
+				<path class="s1" d="m20.3 25.9l-4.9 2.8-4.8-2.8v5.6l4.8 2.7 4.9-2.7z"/>
+			</g>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,27 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 117 40" width="117" height="40">
+	<title>logoalternatif</title>
+	<style>
+		tspan { white-space:pre } 
+		.s0 { fill: none } 
+		.t1 { font-size: 16px;fill: #ffffff;font-weight: 400;font-family: "ABeeZee-Regular", "ABeeZee" } 
+		.s2 { fill: #ffffff } 
+		.s3 { fill: #1572e8 } 
+	</style>
+	<g id="Clip-Path">
+		<g>
+			<path class="s0" d="m0 0h117v40h-117z"/>
+			<text id="Cloud 01" style="transform: matrix(1,0,0,1,42.167,26.167)" >
+				<tspan x="0" y="0" class="t1">C</tspan><tspan  y="0" class="t1">l</tspan><tspan  y="0" class="t1">o</tspan><tspan  y="0" class="t1">u</tspan><tspan  y="0" class="t1">d</tspan><tspan  y="0" class="t1"> </tspan><tspan  y="0" class="t1">0</tspan><tspan  y="0" class="t1">1
+</tspan>
+			</text>
+			<g>
+				<path class="s2" d="m1 10.5l16.5-9.5 16.4 9.5v19l-16.4 9.5-16.5-9.5z"/>
+				<path class="s3" d="m5.1 12.9l12.4-7.2 12.3 7.2v14.2l-4.1 2.4v-14.3l-8.2-4.7-8.3 4.7v14.3l-4.1-2.4z"/>
+				<path class="s3" d="m17.5 15.2l4.1 2.4v4.8l-4.1 2.3-4.1-2.3v-4.8z"/>
+				<path class="s3" d="m13.4 27.1l4.1 2.4 4.1-2.4v4.8l-4.1 2.4-4.1-2.4z"/>
+			</g>
+		</g>
+		<text id="" style="transform: matrix(1,0,0,1,517,104)" >
+		</text>
+	</g>
+</svg>
