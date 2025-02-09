@@ -1,0 +1,88 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} UI Forms {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Forms</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="#">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Forms</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Basic Form</a>
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<div class="card-title">Form Elements</div>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<div class="form-group form-inline">
+										<label for="inlineinput" class="col-md-3 col-form-label">Nom du conteneur</label>
+										<div class="col-md-9 p-0">
+											<input type="text" class="form-control input-full" id="container_name_create" placeholder="Nom du conteneur">
+										</div>
+									</div>
+									<div class="form-group form-inline">
+										<label for="inlineinput" class="col-md-3 col-form-label">Image</label>
+										<div class="col-md-9 p-0">
+											<input type="text" class="form-control input-full" id="container_image_create" placeholder="Image">
+										</div>
+									</div>
+									<div class="form-group form-inline">
+										<label for="inlineinput" class="col-md-3 col-form-label">Port du conteneur</label>
+										<div class="col-md-9 p-0">
+											<input type="text" class="form-control input-full" id="container_port_create" placeholder="Port du conteneur">
+										</div>
+									</div>
+									<div class="form-group form-inline">
+										<label for="inlineinput" class="col-md-3 col-form-label">Port extérieur</label>
+										<div class="col-md-9 p-0">
+											<input type="text" class="form-control input-full" id="host_port_create" placeholder="Port du extérieur">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card-action">
+							<button class="btn btn-success">Submit</button>
+							<button class="btn btn-danger">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+	<!-- Atlantis DEMO methods, don't include it in your project! -->
+	<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}
