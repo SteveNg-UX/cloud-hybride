@@ -1,6 +1,6 @@
 from typing import Union
 from pydantic import BaseModel
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 import paramiko
 
 app = FastAPI()
@@ -65,7 +65,21 @@ def create_bdd(bdd: Bdd):
 
 @app.post("/api/vm/create")
 def create_vm(vm: VirtualMachine):
-    ssh_command = "ansible-playbook /ansible/vm_create/ansible-playbook.yml -e 'vm_ip="+vm.vm_ip+" template="+vm.template+" number_worker=0 disk_size="+vm.disk_size+" deployement_name="+vm.deployement_name+"'"
+    async def send_data(
+        vm_ip_create: str = Form(...),
+        vm_name_create: str = Form(...),
+        vm_template_create: str = Form(...),
+        vm_storage_create: str = Form(...),
+        vm_os_create: str = Form(...)
+    ):
+    payload = {
+        "vm_ip_create": vm_ip_create,
+        "vm_name_create": vm_name_create,
+        "vm_template_create": vm_template_create,
+        "vm_storage_create": vm_storage_create,
+#        "vm_os_create": vm_os_create
+    }
+    ssh_command = "ansible-playbook /ansible/vm_create/ansible-playbook.yml -e 'vm_ip="+vm_ip_create+" template="+vm_template_create+" number_worker=0 disk_size="+vm_storage_create+" deployement_name="+vm_name_create+"'"
     output, error = ssh_connection(ssh_command)
     if error:
         return {"status": "error", "message": error}
