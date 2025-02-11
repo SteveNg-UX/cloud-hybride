@@ -1,0 +1,5 @@
+---
+- name: Deployer une VM ESXi
+  hosts: localhost
+
+  vars:
