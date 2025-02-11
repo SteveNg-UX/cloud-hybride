@@ -1,0 +1,37 @@
+- name: Supprimer une instance EC2
+  hosts: localhost  # Adapte au bon groupe dans ton inventory.yml
+  gather_facts: no
+
+  vars_prompt:
+    - name: instance_name
+      prompt: "Entrez le nom de l'instance EC2 à supprimer"
+
+  tasks:
+    - name: Récupérer l'ID de l'instance depuis son nom
+      amazon.aws.ec2_instance_info:
+        filters:
+          "tag:Name": "{{ instance_name }}"
+      register: ec2_info
+
+    - name: Vérifier si une instance correspond au nom donné
+      fail:
+        msg: "Aucune instance trouvée avec le nom '{{ instance_name }}'."
+      when: ec2_info.instances | length == 0
+
+    - name: Extraire l'ID de l'instance
+      set_fact:
+        instance_id: "{{ ec2_info.instances[0].instance_id }}"
+
+    - name: Arrêter l'instance avant suppression
+      amazon.aws.ec2_instance:
+        instance_ids: ["{{ instance_id }}"]
+        state: stopped
+
+    - name: Supprimer l'instance EC2
+      amazon.aws.ec2_instance:
+        instance_ids: ["{{ instance_id }}"]
+        state: absent
+
+    - name: Confirmation de suppression
+      debug:
+        msg: "L'instance '{{ instance_name }}' (ID: {{ instance_id }}) a été supprimée avec succès."

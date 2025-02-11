@@ -1,0 +1,67 @@
+- hosts: localhost
+  gather_facts: no
+  vars:
+    vpc_id: "vpc-06afcaf63e61b5c0f"
+    security_group: "sg-01e003cd306bf4427"
+    db_subnet_group_name: "grpsub_database"
+
+  vars_prompt:
+    - name: db_engine
+      prompt: "Choisissez le moteur de base de données (ex: mysql, postgres)"
+    - name: db_instance
+      prompt: "Choisissez le type d'instance (ex: db.t2.micro)"
+    - name: db_name
+      prompt: "Nom de la base de données"
+    - name: db_user
+      prompt: "Nom d'utilisateur admin"
+    - name: db_password
+      prompt: "Mot de passe pour l'utilisateur admin"
+      private: yes
+    - name: db_size
+      prompt: "Taille de la base de données (en Go)"
+      default: 20
+    - name: public_access
+      prompt: "Souhaitez-vous que la base de données soit accessible publiquement ? (yes/no)"
+      private: no
+
+  tasks:
+    - name: Afficher les entrées utilisateur
+      debug:
+        msg:
+          - "Moteur de base de données : {{ db_engine }}"
+          - "Type d'instance : {{ db_instance }}"
+          - "Nom de la base : {{ db_name }}"
+          - "Utilisateur admin : {{ db_user }}"
+          - "VPC ID : {{ vpc_id }}"
+          - "Groupe de sous-réseaux : {{ db_subnet_group_name }}"
+          - "Security Group : {{ security_group }}"
+          - "Taille de la base : {{ db_size }} Go"
+          - "Accès public : {{ public_access }}"
+
+    - name: Convertir le choix public_access en booléen
+      set_fact:
+        publicly_accessible: "{{ true if public_access == 'yes' else false }}"
+
+    - name: Créer une instance RDS avec options avancées
+      amazon.aws.rds_instance:
+        db_instance_identifier: "{{ db_name }}"
+        db_name: "{{ db_name }}"
+        engine: "{{ db_engine }}"
+        instance_type: "{{ db_instance }}"
+        master_username: "{{ db_user }}"
+        master_user_password: "{{ db_password }}"
+        allocated_storage: "{{ db_size }}"
+        vpc_security_group_ids: "{{ security_group }}"
+        db_subnet_group_name: "{{ db_subnet_group_name }}"
+        publicly_accessible: "{{ publicly_accessible }}"
+        backup_retention_period: 3
+        preferred_backup_window: "02:00-03:00"
+        tags:
+          Name: "{{ db_name | regex_replace('[^a-zA-Z0-9_ .:/=+-@]', '_') }}"
+          Environment: "prod"
+        state: present
+      register: rds_instance
+
+    - name: Afficher les informations de l'instance RDS
+      debug:
+        var: rds_instance

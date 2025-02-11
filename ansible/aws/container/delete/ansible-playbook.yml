@@ -1,0 +1,72 @@
+---
+- name: Delete cluster ECS, la task et le container
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: informations service ECS
+      community.aws.ecs_service_info:
+        cluster: clusterECS01
+      register: ecs_services_info
+
+    - name: Afficher les informations des services ECS
+      debug:
+        var: ecs_services_info
+
+    - name: Obtenir les détails du service ECS via AWS CLI
+      command: "aws ecs describe-services --cluster clusterECS01 --services {{ ecs_services_info.services[0] }} --query 'services[0].taskDefinition' --output text"
+      register: task_definition_arn
+
+    - name: Afficher l'ARN de la définition de tâche
+      debug:
+        var: task_definition_arn
+
+    - name: Update service ECS to 0 tasks
+      community.aws.ecs_service:
+        cluster: clusterECS01
+        name: "{{ container_name }}"  # Assurez-vous que {{ container_name }} est défini
+        desired_count: 0
+        task_definition: "{{ task_definition_arn.stdout }}"
+        force_new_deployment: true
+        state: present
+
+    - name: Wait for service tasks to drain
+      command: "aws ecs describe-services --cluster clusterECS01 --services {{ ecs_services_info.services[0] }} --query 'services[0].runningCount' --output text"
+      register: running_count
+      until: running_count.stdout == "0"
+      retries: 30
+      delay: 10
+
+    - name: Delete service ECS
+      community.aws.ecs_service:
+        cluster: clusterECS01
+        name: "{{ container_name }}"
+        state: absent
+
+    - name: Obtenir les détails de la définition de tâche via AWS CLI
+      command: "aws ecs describe-task-definition --task-definition {{ task_definition_arn.stdout }} --output json"
+      register: task_definition_details
+
+    - name: Afficher les détails de la définition de tâche
+      debug:
+        var: task_definition_details
+
+    - name: Extraire l'ARN de la définition de tâche
+      set_fact:
+        task_definition_arn_final: "{{ (task_definition_details.stdout | from_json).taskDefinition.taskDefinitionArn }}"
+
+    - name: Extraire les conteneurs de la définition de tâche
+      set_fact:
+        task_definition_containers: "{{ (task_definition_details.stdout | from_json).taskDefinition.containerDefinitions }}"
+
+    - name: Delete task ECS
+      community.aws.ecs_taskdefinition:
+        arn: "{{ task_definition_arn_final }}"
+        containers: "{{ task_definition_containers }}"
+        state: absent
+
+    - name: Delete cluster ECS
+      community.aws.ecs_cluster:
+        name: clusterECS01
+        state: absent
+

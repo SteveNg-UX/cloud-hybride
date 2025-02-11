@@ -1,0 +1,56 @@
+- name: Déployer une instance EC2
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    vpc_id: "vpc-06afcaf63e61b5c0f"
+    subnet_id: "subnet-0e6247578f079d551"
+    security_group: "sg-01e003cd306bf4427"
+    key_name: "BITS-KEYPAIR"
+
+  vars_prompt:
+    - name: instance_name
+      prompt: "Nom de l'instance"
+    - name: instance_type
+      prompt: "Type d'instance (ex: t2.micro)"
+      default: "t2.micro"
+    - name: os_choice
+      prompt: "Choisissez le système d'exploitation (linux/windows)"
+      default: "linux"
+    - name: public_access
+      prompt: "L'instance doit-elle être accessible publiquement ? (oui/non)"
+      default: "non"
+
+  tasks:
+    - name: Définir l'AMI en fonction du choix de l'utilisateur
+      set_fact:
+        ami_id: >-
+          {{
+            "ami-06e02ae7bdac6b938" if os_choice == "linux" else 
+            "ami-03d12baf9447d0158" if os_choice == "windows" else 
+            "ami-06e02ae7bdac6b938"
+          }}
+
+    - name: Convertir le choix public_access en booléen
+      set_fact:
+        associate_public_ip: "{{ true if public_access == 'oui' else false }}"
+
+    - name: Lancer l'instance EC2
+      amazon.aws.ec2_instance:
+        name: "{{ instance_name }}"
+        instance_type: "{{ instance_type }}"
+        image_id: "{{ ami_id }}"
+        key_name: "{{ key_name }}"
+        vpc_subnet_id: "{{ subnet_id }}"
+        security_groups: "{{ security_group }}"
+        network:
+          assign_public_ip: "{{ associate_public_ip }}"
+        tags:
+          Name: "{{ instance_name }}"
+          Environment: "dev"
+        state: running
+      register: ec2_instance
+
+    - name: Afficher les informations de l'instance EC2
+      debug:
+        var: ec2_instance

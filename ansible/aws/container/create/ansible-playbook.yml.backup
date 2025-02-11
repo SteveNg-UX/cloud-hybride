@@ -1,0 +1,44 @@
+---
+- name: Deploy container ECS Fargate
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Create task ECS
+      ecs_taskdefinition:
+        family: task01
+        container_definitions:
+          - name: "{{ container_name }}"
+            image: "{{ image }}"
+            memory: 512
+            cpu: 256
+            port_mappings:
+              - containerPort: "{{ port_container }}"
+                hostPort: "{{ port_host }}"
+        state: present
+      register: task_definition
+
+    - name: Obtenir des informations sur les clusters ECS
+      ecs_cluster_facts:
+
+    - name: Create cluster ECS with condition
+      ecs_cluster:
+        name: clusterECS01
+        state: present
+      when: "'clusterECS01' not in ecs_clusters"
+
+    - name: Create service ECS
+      ecs_service:
+        cluster: clusterESC01
+        name: "{{ container_name }}"
+        task_definition: "{{ task_definition.taskdefinition_arn }}"
+        desired_count: 1
+        launch_type: Fargate
+        network_configuration:
+          awsvpc_configuration:
+            subnets:
+              - vpc-06afcaf63e61b5c0f
+            security_groups:
+              - sg-01e003cd306bf4427
+            assign_public_ip: "ENABLED"
+        state: present

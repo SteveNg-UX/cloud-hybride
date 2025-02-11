@@ -1,0 +1,26 @@
+- name: Supprimer une base de données RDS
+  hosts: localhost
+  gather_facts: no
+  vars_prompt:
+    - name: db_name
+      prompt: "Nom de la base de données à supprimer"
+    - name: confirm_deletion
+      prompt: "Êtes-vous sûr de vouloir supprimer cette base de données ? (oui/non)"
+      default: "oui"
+
+  tasks:
+    - name: Vérifier la confirmation de suppression
+      fail:
+        msg: "Suppression annulée par l'utilisateur."
+      when: confirm_deletion | lower != 'oui'
+
+    - name: Supprimer l'instance RDS
+      amazon.aws.rds_instance:
+        db_instance_identifier: "{{ db_name }}"
+        state: absent
+        skip_final_snapshot: true
+      register: rds_deletion
+
+    - name: Afficher le résultat de la suppression
+      debug:
+        var: rds_deletion

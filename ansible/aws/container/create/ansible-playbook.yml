@@ -1,0 +1,46 @@
+---
+- name: Déployer un conteneur ECS Fargate
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Créer un cluster ECS
+      community.aws.ecs_cluster:
+        name: clusterECS01
+        state: present
+        purge_capacity_providers: true
+
+    - name: Créer une définition de tâche ECS
+      community.aws.ecs_taskdefinition:
+        family: task01
+        network_mode: awsvpc
+        launch_type: FARGATE
+        cpu: "256"
+        memory: "512"
+        containers:
+          - name: "{{ container_name }}"
+            image: "{{ image }}"
+            essential: true
+            portMappings:
+              - containerPort: "{{ port_container }}"
+        state: present
+      register: task_definition
+
+    - name: Afficher la sortie de la définition de tâche
+      debug:
+        var: task_definition
+
+    - name: Créer un service ECS
+      community.aws.ecs_service:
+        cluster: clusterECS01
+        name: "{{ container_name }}"
+        task_definition: "{{ task_definition.taskdefinition.taskDefinitionArn }}"
+        desired_count: 1
+        launch_type: FARGATE
+        network_configuration:
+          subnets: 
+            - subnet-0e6247578f079d551
+          security_groups:
+            - sg-01e003cd306bf4427
+          assign_public_ip: true
+        state: present
